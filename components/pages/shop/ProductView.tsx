@@ -1,14 +1,17 @@
-"use client"
+"use client";
 
 import { FilterIcon } from "@/components/icons/filter";
+import { useMediaQuery } from 'usehooks-ts'
 import { LayoutOptions } from "@/components/pages/shop/LayoutOptions";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useProductQuery } from "@/lib/queries/useProductsQuery";
 import { useState } from "react";
 import { SortOptions } from "./SortOptions";
-import { SORTOPTIONS } from "@/types/types";
-import { useMediaQuery } from "@uidotdev/usehooks";
+import { CATEGORY_LIST, SORTOPTIONS } from "@/types/types";
+import { useCategories } from "@/lib/queries/useCategories";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export const ProductView = () => {
   const [layout, setLayout] = useState<1 | 2 | 3>(1);
@@ -20,16 +23,23 @@ export const ProductView = () => {
     order: "asc"
   });
 
-  const [category, setCategory] = useState();
+  const categories = useCategories();
 
-  const isLargeDevice = useMediaQuery("(min-width : 64rem)");
+  const [category, setCategory] = useState<{
+    name: "All Products",
+    slug: "all"
+  } | CATEGORY_LIST>({
+    name: "All Products",
+    slug: "all"
+  });
 
-  console.log(isLargeDevice)
-
+  const isLargeDevice = useMediaQuery("(min-width : 64rem)", {
+    initializeWithValue: false
+  });
   const products = useProductQuery();
 
-  console.log(products.data);
 
+  console.log(category);
   return (
     <div>
       <div className="grid grid-cols-2 lg:grid-cols-[265px_1fr_1fr_auto] lg:gap-6">
@@ -56,21 +66,61 @@ export const ProductView = () => {
           "
         >
           {isLargeDevice ?
-            <div>
-              Testing
-            </div>
+            <div>{category.name}</div>
             :
             <Drawer>
               <DrawerTrigger className="flex items-center cursor-pointer">
-                <span className="font-semibold underline">Living Room</span>
+                <span className="font-semibold underline">{category.name}</span>
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                  <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                  <DrawerTitle>Product Categories</DrawerTitle>
                 </DrawerHeader>
+                <ScrollArea className="h-48">
+                  <div className="flex flex-col gap-4 px-8">
+                    <DrawerClose
+                      asChild
+                    >
+                      <Button
+                        variant={"ghost"}
+                        className={cn(
+                          "flex items-center justify-center",
+                          "all" === category.slug && "bg-neutral-02 font-bold"
+                        )}
+                        onClick={() => {
+                          setCategory({
+                            name: "All Products",
+                            slug: "all"
+                          });
+                        }}
+                      >
+                        {"All Products"}
+                      </Button>
+                    </DrawerClose>
+                    {categories.data?.map(function(item) {
+                      return (
+                        <DrawerClose
+                          key={item.slug}
+                          asChild
+                        >
+                          <Button
+                            variant={"ghost"}
+                            className={cn(
+                              "flex items-center justify-center",
+                              item.slug === category.slug && "bg-neutral-02 font-bold"
+                            )}
+                            onClick={() => {
+                              setCategory(item);
+                            }}
+                          >
+                            {item.name}
+                          </Button>
+                        </DrawerClose>
+                      )
+                    })}
+                  </div>
+                </ScrollArea>
                 <DrawerFooter>
-                  <Button>Submit</Button>
                   <DrawerClose asChild>
                     <Button variant="outline">Cancel</Button>
                   </DrawerClose>
