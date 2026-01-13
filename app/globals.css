@@ -4,11 +4,22 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* DESIGN SYSTEM */
+
   --primary: oklch(0.205 0 0);
   --secondary-blue: oklch(0.6179 0.2063 261.39);
   --secondary-green: oklch(0.7498 0.1556 158.92);
   --secondary-orange: oklch(0.8034 0.1704 73.79);
   --secondary-red: oklch(0.679 0.2114 34.02);
+  --neutral-07: oklch(0.2018 0.0051 219.72);
+  --neutral-06: oklch(0.266 0.0048 219.65);
+  --neutral-05: oklch(0.3372 0.0058 214.37);
+  --neutral-04: oklch(0.5479 0.0087 228.96);
+  --neutral-03: oklch(0.9409 0.0059 239.82);
+  --neutral-02: oklch(0.9692 0.0034 247.86);
+  --neutral-01: oklch(0.9692 0.0034 247.86);
+
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -85,6 +96,14 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-neutral-07: var(--neutral-07);
+  --color-neutral-06: var(--neutral-06);
+  --color-neutral-05: var(--neutral-05);
+  --color-neutral-05: var(--neutral-05);
+  --color-neutral-04: var(--neutral-04);
+  --color-neutral-03: var(--neutral-03);
+  --color-neutral-02: var(--neutral-02);
+  --color-neutral-01: var(--neutral-01);
 }
 
 .dark {
@@ -123,8 +142,9 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 border-neutral-03;
   }
+
   body {
     @apply bg-background text-foreground;
   }
