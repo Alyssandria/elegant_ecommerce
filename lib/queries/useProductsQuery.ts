@@ -1,4 +1,5 @@
 "use client";
+import { API_SUCCESS, PAGINATED_QUERY, PRODUCTS } from "@/types/types";
 import { useInfiniteQuery } from "@tanstack/react-query"
 import axios from "axios";
 
@@ -16,14 +17,13 @@ export const useProductQuery = (search?: string) => {
         }
       });
 
-      return res.data;
+      return res.data as API_SUCCESS<PAGINATED_QUERY & { products: PRODUCTS[] }>;
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      const nextSkip = lastPage.skip + lastPage.limit;
+      const nextSkip = lastPage.data.skip + lastPage.data.limit;
 
-      // Stop if we've loaded everything
-      if (nextSkip >= lastPage.total) return undefined;
+      if (nextSkip >= lastPage.data.total) return undefined;
 
       return nextSkip;
     }
